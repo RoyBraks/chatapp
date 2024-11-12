@@ -6,18 +6,35 @@
               <p id="user-text">{{message.content}}</p>
             </div>
             <div class="chat-container-chats-message" v-else id="assistant">
-              <img src="https://hips.hearstapps.com/hmg-prod/images/republican-presidential-candidate-former-president-donald-news-photo-1721157463.jpg">
+              <img v-if="assistant === 'Donald Trump'" src="https://hips.hearstapps.com/hmg-prod/images/republican-presidential-candidate-former-president-donald-news-photo-1721157463.jpg">
+              <img v-if="assistant === 'Alex Soze'" src="https://jalta.nl/wp-content/uploads/2024/05/alex-soze-operatie-300x300.jpg">
+              <img v-if="assistant === 'Arnold Schwarzenegger'" src="https://images.bstatic.de/gAGwUI5npbyXsXvX9Bu-SsNPO4w=/1200x1200/filters:focal(371x204:391x224)/images/ce3b174d/e9a6/4064/8c4a/da1e6a4809dc.jpg">
               <p id="assistant-text">{{ message.content }} </p>
             </div>
           </div>
         </div>
         <div class="chat-container-input">
-          <div class="chat-container-input-character">
-            <img src="https://hips.hearstapps.com/hmg-prod/images/republican-presidential-candidate-former-president-donald-news-photo-1721157463.jpg">
+          <div class="chat-container-input-assistantmenu" v-if="chooseAssistant">
+              <button @click="this.assistant = 'Donald Trump', chooseAssistant = !chooseAssistant">
+                <p>Donald Trump</p>
+              </button>
+              <button @click="this.assistant = 'Alex Soze', chooseAssistant = !chooseAssistant">
+                <p>Alex Soze</p>
+              </button>
+              <button @click="this.assistant = 'Arnold Schwarzenegger', chooseAssistant = !chooseAssistant">
+                <p>Arnold Schwarzenegger</p>
+              </button>
           </div>
-          <div class="chat-container-input-text">
-            <input class="chat-container-input-text-input" v-model="userInput" placeholder="Type your message here..." @keyup.enter="sendMessage">
-            <button @click="sendMessage">></button>
+          <div class="chat-container-input-message">
+            <button @click="chooseAssistant = !chooseAssistant" class="chat-container-input-message-character">
+              <img v-if="assistant === 'Donald Trump'" src="https://hips.hearstapps.com/hmg-prod/images/republican-presidential-candidate-former-president-donald-news-photo-1721157463.jpg">
+              <img v-if="assistant === 'Alex Soze'" src="https://jalta.nl/wp-content/uploads/2024/05/alex-soze-operatie-300x300.jpg">
+              <img v-if="assistant === 'Arnold Schwarzenegger'" src="https://images.bstatic.de/gAGwUI5npbyXsXvX9Bu-SsNPO4w=/1200x1200/filters:focal(371x204:391x224)/images/ce3b174d/e9a6/4064/8c4a/da1e6a4809dc.jpg">
+            </button>
+            <div class="chat-container-input-message-text">
+              <input class="chat-container-input-message-text-input" v-model="userInput" placeholder="Type your message here..." @keyup.enter="sendMessage">
+              <button @click="sendMessage">></button>
+            </div>
           </div>
         </div>
     </div>
@@ -68,45 +85,55 @@
     }
     &-input{
       background: #D1D1D1;
-      height: 5rem;
       width: 100vw;
-      padding: 1rem 0.8rem;
-      display: flex;
-      gap: 1rem;
-      align-items: center;
       position: absolute;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
       bottom: 0;
-      box-sizing: border-box;
-      &-character{
-        display: flex;
-        align-items: center;
-        img{
-          width: 2.5rem; 
-          height: 2.5rem;
-          border-radius: 50%;
-          object-fit: cover;
-        }  
+      &-assistantmenu{
+        padding: 1rem 0.8rem;
       }
-      &-text{
+      &-message{
+        height: 5rem;
+        padding: 1rem 0.8rem;
         display: flex;
-        justify-content: space-between;
+        gap: 1rem;
         align-items: center;
-        width: 100%;
-        background: white;
-        height: 100%;
-        border-radius: 0.5rem;
-        padding: 0rem 1rem;
-
-        &-input, button{
+        box-sizing: border-box;
+        &-character{
+          display: flex;
+          align-items: center;
           border: none;
           background: none;
+          img{
+            width: 2.5rem; 
+            height: 2.5rem;
+            border-radius: 50%;
+            object-fit: cover;
+          }  
         }
-        &-input{
+        &-text{
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
           width: 100%;
-        }
-        &-input:focus{
-          border-color: none;  
-          outline: none;
+          background: white;
+          height: 100%;
+          border-radius: 0.5rem;
+          padding: 0rem 1rem;
+
+          &-input, button{
+            border: none;
+            background: none;
+          }
+          &-input{
+            width: 100%;
+          }
+          &-input:focus{
+            border-color: none;  
+            outline: none;
+          }
         }
       }
     }
@@ -121,16 +148,16 @@ const openai = new OpenAI({
   export default {
     data() {
     return {
-      messages: [
-        // { role: '${this.chosenAssistant}' , content: 'How can I help you folks?' }
-      ],
+      messages: [],
       userInput: '',
       threadId: null, // Om een unieke thread te identificeren
       assistantId: "asst_DfGvqOzJAqC0oxvba55M6qBL",
-      chosenAssistant: "Donald Trump"
+      assistant: 'Donald Trump',
+      chooseAssistant: false,
     };
   },
   methods: {
+
     async sendMessage() {
       if (!this.userInput.trim()) return;
 
@@ -156,13 +183,24 @@ const openai = new OpenAI({
           });
         }
 
+        if (this.assistant === 'Donald Trump') {
+          this.assistantId = "asst_DfGvqOzJAqC0oxvba55M6qBL"
+        } else if (this.assistant === 'Alex Soze') {
+          this.assistantId = "asst_qaPMUMfHwlSeUrvnVt2LUf4b"
+        } else if (this.assistant === 'Arnold Schwarzenegger') {
+          this.assistantId = "asst_4PbTAgWGyXdQ3NiTT3QHhZj1"
+        }
+
         // start thread met de juiste assistant
         let run = await openai.beta.threads.runs.createAndPoll(this.threadId, {
-            assistant_id: this.assistantId
-            },
+            assistant_id: this.assistantId,
+          },
         );
+
+        if (run.status === 'in_progress') {
+          this.showTyping = true;
+        }
         
-        //
         if (run.status === 'completed') {
             const thread_messages = await openai.beta.threads.messages.list(
                 run.thread_id,
