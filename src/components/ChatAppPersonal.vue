@@ -48,11 +48,17 @@
     position: relative;
     height: 100vh;
     box-sizing: content-box;
+    &-chats::-webkit-scrollbar{
+      display: none;
+      }
     &-chats{
+      -ms-overflow-style: none;
+      scrollbar-width: none;
       max-height: 87vh;
       padding: 1rem;
       display: flex;
       overflow: scroll;
+      scroll: hidden;
       flex-direction: column;
       gap: 2rem;
       #assistant{
