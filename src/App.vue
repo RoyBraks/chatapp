@@ -5,6 +5,7 @@
 <script>
 import ChatAppPersonal from './components/ChatAppPersonal.vue'
 
+
 export default {
   name: 'App',
   components: {
