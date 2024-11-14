@@ -212,19 +212,11 @@ const openai = new OpenAI({
                 run.thread_id,
             );
             const thread_message = thread_messages.data[0]
-                console.log(thread_message);
                 if (thread_message.assistant_id === this.assistantId) {
                     this.messages.push({ role: this.chosenAssistant, content: thread_message.content[0].text.value })
-                    console.log(this.messages);
                 }
                 
-        }   else {
-            console.log(run.status);
         }
-        
-
-    
-
       } catch (error) {
         console.error('Er ging iets mis:', error);
         this.messages.push({ role: 'assistant', content: 'Er ging iets mis, probeer het opnieuw.' });
